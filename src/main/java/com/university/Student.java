@@ -48,11 +48,11 @@ public class Student {
     }
 
     public boolean isRegistered(String courseCode) {
-        return registeredCourses.contains(courseCode);
+        return registeredCourses.contains(courseCode.toUpperCase(java.util.Locale.ROOT));
     }
 
     public void addRegistration(String courseCode, int credits) {
-        registeredCourses.add(courseCode);
+        registeredCourses.add(courseCode.toUpperCase(java.util.Locale.ROOT));
         totalCredits += credits;
     }
 }

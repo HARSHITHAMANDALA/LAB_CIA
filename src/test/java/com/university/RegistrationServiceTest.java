@@ -195,4 +195,56 @@ class RegistrationServiceTest {
         assertEquals(2, course.getCurrentEnrollment());
     }
 
+   
+@Test
+void shouldRejectDuplicateRegistrationWithDifferentCase() {
+    Student student = new Student("S104", "Arun");
+
+    Course firstCourse = new Course(
+        "CS101", "Programming", 4, 10, true, null
+    );
+
+    Course duplicateCourse = new Course(
+        "cs101", "Programming", 4, 10, true, null
+    );
+
+    RegistrationService service = new RegistrationService();
+
+    assertTrue(service.register(student, firstCourse));
+
+    // Same course code with different capitalization must be rejected.
+    boolean result = service.register(student, duplicateCourse);
+
+    assertFalse(result);
+    assertEquals(4, student.getTotalCredits());
+    assertEquals(1, firstCourse.getCurrentEnrollment());
+    assertEquals(0, duplicateCourse.getCurrentEnrollment());
+}
+
+@Test
+void shouldRejectDuplicateRegistrationWithMixedCase() {
+    Student student = new Student("S105", "Priya");
+
+    Course firstCourse = new Course(
+        "CS102", "Data Structures", 3, 10, true, null
+    );
+
+    Course duplicateCourse = new Course(
+        "Cs102", "Data Structures", 3, 10, true, null
+    );
+
+    RegistrationService service = new RegistrationService();
+
+    assertTrue(service.register(student, firstCourse));
+
+    // "CS102" and "Cs102" represent the same course.
+    boolean result = service.register(student, duplicateCourse);
+
+    assertFalse(result);
+    assertEquals(3, student.getTotalCredits());
+    assertEquals(1, firstCourse.getCurrentEnrollment());
+    assertEquals(0, duplicateCourse.getCurrentEnrollment());
+}
+
+
 }
