@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'Maven-3.9'
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -10,17 +14,14 @@ pipeline {
 
         stage('Build and Test') {
             steps {
-                bat 'mvn -B clean verify'
+                sh 'mvn -B clean verify'
             }
         }
     }
 
     post {
         always {
-            junit(
-                testResults: 'course-registration-app/target/surefire-reports/TEST-*.xml',
-                allowEmptyResults: true
-            )
+            junit 'course-registration-app/target/surefire-reports/TEST-*.xml'
         }
 
         success {
