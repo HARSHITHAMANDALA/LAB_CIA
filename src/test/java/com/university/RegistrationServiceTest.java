@@ -150,4 +150,49 @@ class RegistrationServiceTest {
         assertFalse(result);
         assertFalse(student.isRegistered("CS301"));
     }
+    
+    @Test
+    void shouldRejectRegistrationWhenCourseIsAtCapacity() {
+        Student student = new Student("S102", "Ravi");
+
+        Course course = new Course(
+                "CS301", "Data Structures",
+                4, 1, true, null
+        );
+
+        // The course already has one student and capacity is one.
+        course.incrementEnrollment();
+
+        RegistrationService service = new RegistrationService();
+
+        boolean result = service.register(student, course);
+
+        assertFalse(result);
+        assertFalse(student.isRegistered("CS301"));
+        assertEquals(0, student.getTotalCredits());
+        assertEquals(1, course.getCurrentEnrollment());
+    }
+
+    @Test
+    void shouldAllowRegistrationWhenExactlyOneSeatRemains() {
+        Student student = new Student("S103", "Meera");
+
+        Course course = new Course(
+                "CS301", "Data Structures",
+                4, 2, true, null
+        );
+
+        // One of the two seats is already occupied.
+        course.incrementEnrollment();
+
+        RegistrationService service = new RegistrationService();
+
+        boolean result = service.register(student, course);
+
+        assertTrue(result);
+        assertTrue(student.isRegistered("CS301"));
+        assertEquals(4, student.getTotalCredits());
+        assertEquals(2, course.getCurrentEnrollment());
+    }
+
 }
